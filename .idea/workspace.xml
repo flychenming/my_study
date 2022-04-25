@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29ccb55d-097c-44c4-b154-4807d340ccd3" name="Changes" comment="调整运行模式">
+    <list default="true" id="29ccb55d-097c-44c4-b154-4807d340ccd3" name="Changes" comment="fix bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -98,7 +98,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1650876314120</updated>
-      <workItem from="1650876316615" duration="7381000" />
+      <workItem from="1650876316615" duration="8188000" />
     </task>
     <task id="LOCAL-00001" summary="初始化项目">
       <created>1650883209213</created>
@@ -121,7 +121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650885192103</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fix bug">
+      <created>1650886469175</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1650886469175</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,7 +149,8 @@
     <MESSAGE value="初始化项目" />
     <MESSAGE value="docker支持" />
     <MESSAGE value="调整运行模式" />
-    <option name="LAST_COMMIT_MESSAGE" value="调整运行模式" />
+    <MESSAGE value="fix bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bug" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

@@ -1,3 +1,5 @@
+import os
+
 from elasticsearch import Elasticsearch
 from flask import Flask, render_template, request, send_file
 from flask_paginate import Pagination, get_page_args
@@ -10,7 +12,9 @@ domain = 'https://nginx.mytestray.cf:10002'
 @app.route('/download/<path:filename>')
 def download_file(filename: str):
     print(filename)
-    return send_file('/root/' + filename, as_attachment=True)
+    listdir = os.listdir('/root/' + filename)
+    if listdir:
+        return send_file('/root/' + filename + '/' + listdir[0], as_attachment=True)
 
 
 @app.route('/')
