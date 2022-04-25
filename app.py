@@ -10,7 +10,7 @@ domain = 'https://nginx.mytestray.cf:10002'
 @app.route('/download/<path:filename>')
 def download_file(filename: str):
     print(filename)
-    return send_file('~/' + filename, as_attachment=True)
+    return send_file('/root/' + filename, as_attachment=True)
 
 
 @app.route('/')
