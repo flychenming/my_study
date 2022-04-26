@@ -11,6 +11,16 @@
 <body>
 <div class="container">
     <h1>出题系统</h1>
+    <form class="form-inline my-2 my-lg-0" role="search" method="get" action="/Search/SearchList" target="_blank">
+        <div class="input-group">
+            <label>
+                <input type="text" class="form-control" name="keyword" placeholder="全站检索"/>
+            </label>
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-secondary">搜索</button>
+            </span>
+        </div><!-- /input-group -->
+    </form>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
