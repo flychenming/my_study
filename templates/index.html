@@ -9,12 +9,51 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 </head>
 <body>
+
+
 <div class="container">
     <h1>出题系统</h1>
-    <form class="form-inline my-2 my-lg-0" role="search" method="get" action="/Search/SearchList" target="_blank">
+
+    <form class="form-inline my-2 my-lg-0" role="search" method="get" action="/">
         <div class="input-group">
+            <span class="input-group-addon">年级</span>
+            <select class="form-control" name="grade" title="请选择"
+                    data-live-search="true">
+                <option value="">请选择</option>
+                {% for item in grade %}
+                    <option value="{{ item.key }}" {% if params['grade']==item.key %}
+                            selected {% endif %}> {{ item.key }}({{ item.doc_count }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">类别</span>
+            <select class="form-control" name="type" title="请选择"
+                    data-live-search="true">
+                <option value="">请选择</option>
+                {% for item in type %}
+                    <option value="{{ item.key }}" {% if params['type']==item.key %}
+                            selected {% endif %}> {{ item.key }}({{ item.doc_count }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">来源</span>
+            <select class="form-control" name="source" title="请选择"
+                    data-live-search="true">
+                <option value="">请选择</option>
+                {% for item in source %}
+                    <option value="{{ item.key }}" {% if params['source']==item.key %}
+                            selected {% endif %}> {{ item.key }}({{ item.doc_count }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="input-group">　　
             <label>
-                <input type="text" class="form-control" name="keyword" placeholder="全站检索"/>
+                <input type="text" class="form-control" name="keyword" value="{{ params.keyword }}" placeholder="全站检索"/>
             </label>
             <span class="input-group-btn">
                 <button type="submit" class="btn btn-secondary">搜索</button>
