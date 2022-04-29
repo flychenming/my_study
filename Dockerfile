@@ -1,6 +1,6 @@
-FROM python:3.8
+FROM python:3.9
 #WORKDIR /flask_test
 COPY . .
-RUN pip install flask gunicorn gevent flask_paginate elasticsearch
+RUN pip install flask gunicorn gevent flask_paginate cachetools patoolib
 EXPOSE 5000
 CMD gunicorn -w 2 app:app

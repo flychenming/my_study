@@ -1,20 +1,33 @@
 import os
+import sqlite3
 
-from elasticsearch import Elasticsearch
+import patoolib
+from cachetools import TTLCache
 from flask import Flask, render_template, request, send_file
 from flask_paginate import Pagination, get_page_args
-
+import urllib.request
+from tempfile import TemporaryDirectory
 app = Flask(__name__)
 
 domain = 'https://nginx.mytestray.cf:10002'
+
+cache = TTLCache(maxsize=10, ttl=360)
 
 
 @app.route('/download/<path:filename>')
 def download_file(filename: str):
     print(filename)
-    listdir = os.listdir('/root/' + filename)
-    if listdir:
-        return send_file('/root/' + filename + '/' + listdir[0], as_attachment=True)
+    td = 'https://www.shijuan1.com/'
+    print(td + filename)
+    file_name, headers = urllib.request.urlretrieve(td + filename)
+    with TemporaryDirectory() as out:
+        print('dirname is:', out)
+        patoolib.extract_archive(file_name, outdir=out)
+        if os.path.exists(out + '/第一试卷网.url'):
+            os.remove(out + '/第一试卷网.url')
+        listdir = os.listdir(out)
+        if listdir:
+            return send_file(out + '/' + listdir[0], as_attachment=True)
 
 
 @app.route('/')
@@ -23,86 +36,56 @@ def index():
                                            per_page_parameter='per_page')
     params = request.args.to_dict()
     print(params)
-    _index = 'study_v1'
-    es = Elasticsearch(
-        hosts=['http://43.154.70.80:9200'],  # 地址
-        request_timeout=3600  # 超时时间
-    )
+    con = sqlite3.connect("my_study.db")
+    con.row_factory = sqlite3.Row
 
-    query = {
-        "bool": {
-        }
-    }
+    cur = con.cursor()
+
+    sql = 'select * from study where 1=1'
+    csql = 'select count(*) as total from study where 1=1'
     if 'keyword' in params and params['keyword']:
-        query['bool']['must'] = [{'match': {
-            "name": {
-                "query": params['keyword'],
-                "boost": 1.0
-            }
-        }}]
+        sql += " and name like '%" + params['keyword'] + "%'"
+        csql += " and name like '%" + params['keyword'] + "%'"
+
     if 'grade' in params and params['grade']:
-        if 'filter' not in query['bool']:
-            query['bool']['filter'] = []
-        query['bool']['filter'].append({'term': {
-            "grade": {
-                "value": params['grade'],
-                "boost": 1.0
-            }
-        }})
-
+        sql += " and grade='%s' " % params['grade']
+        csql += " and grade='%s' " % params['grade']
     if 'type' in params and params['type']:
-        if 'filter' not in query['bool']:
-            query['bool']['filter'] = []
-        query['bool']['filter'].append({'term': {
-            "type": {
-                "value": params['type'],
-                "boost": 1.0
-            }
-        }})
+        sql += " and type='%s' " % params['type']
+        csql += " and type='%s' " % params['type']
     if 'source' in params and params['source']:
-        if 'filter' not in query['bool']:
-            query['bool']['filter'] = []
-        query['bool']['filter'].append({'term': {
-            "source": {
-                "value": params['source'],
-                "boost": 1.0
-            }
-        }})
-    aggregations = {
-        "grade": {
-            "terms": {
-                "field": "grade"
-            }
-        },
-        "type": {
-            "terms": {
-                "field": "type"
-            }
-        },
-        "source": {
-            "terms": {
-                "field": "source"
-            }
-        }
-    }
-    print(query)
-    agg = es.search(index=_index, query={
-        "match_all": {}
-    }, from_=0, size=0, aggregations=aggregations)
-
-    data = es.search(index=_index, query=query if query['bool'] else {
-        "match_all": {}
-    }, from_=offset, size=per_page)
+        sql += " and source='%s' " % params['source']
+        csql += " and source='%s' " % params['source']
+    cur.execute(csql)
+    total = cur.fetchone()['total']
+    sql += ' limit %d offset %d' % (per_page, offset)
+    print(sql)
+    cur.execute(sql)
+    data = cur.fetchall()
     # print(data)
-    total = data['hits']['total']['value']
-    grade = agg['aggregations']['grade']['buckets']
-    _type = agg['aggregations']['type']['buckets']
-    source = agg['aggregations']['source']['buckets']
-    list_data = data['hits']['hits']
+
+    if 'grade' in cache:
+        grade = cache['grade']
+    else:
+        cur.execute('select grade key,count(grade) doc_count from study group by grade')
+        grade = cur.fetchall()
+        cache['grade'] = grade
+    if 'type' in cache:
+        _type = cache['type']
+    else:
+        cur.execute('select type key,count(type) doc_count from study group by type')
+        _type = cur.fetchall()
+        cache['type'] = _type
+    if 'source' in cache:
+        source = cache['source']
+    else:
+        cur.execute('select source key,count(source) doc_count from study group by source')
+        source = cur.fetchall()
+        cache['source'] = source
     pagination = Pagination(page=page, per_page=per_page, total=total,
                             css_framework='bootstrap4')
     return render_template('index.html',
-                           data=list_data,
+                           data=data,
                            page=page,
                            per_page=per_page,
                            pagination=pagination, domain=domain, grade=grade,
