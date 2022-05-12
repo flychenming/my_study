@@ -66,6 +66,7 @@ def get_page(page_url: str):
             placeholders = ', '.join('?' * len(body))
             sql = 'INSERT INTO study ({}) VALUES ({})'.format(columns, placeholders)
             values = [int(x) if isinstance(x, bool) else x for x in body.values()]
+            print(values)
             cur.execute(sql, values)
             con.commit()
             # es.index(index=index, document=body, id=sid)
