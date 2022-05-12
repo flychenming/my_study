@@ -7,9 +7,10 @@ from flask import Flask, render_template, request, send_file
 from flask_paginate import Pagination, get_page_args
 import urllib.request
 from tempfile import TemporaryDirectory
+
 app = Flask(__name__)
 
-domain = 'https://nginx.mytestray.cf:10002'
+domain = 'https://nginx.mytestray.cf:10003'
 
 cache = TTLCache(maxsize=10, ttl=360)
 
