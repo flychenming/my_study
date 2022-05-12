@@ -31,6 +31,23 @@ def download_file(filename: str):
             return send_file(out + '/' + listdir[0], as_attachment=True)
 
 
+@app.route('/view/<path:filename>')
+def view_file(filename: str):
+    print(filename)
+    td = 'https://www.shijuan1.com/'
+    print(td + filename)
+    file_name, headers = urllib.request.urlretrieve(td + filename)
+    with TemporaryDirectory() as out:
+        print('dirname is:', out)
+        patoolib.extract_archive(file_name, outdir=out)
+        if os.path.exists(out + '/第一试卷网.url'):
+            os.remove(out + '/第一试卷网.url')
+        listdir = os.listdir(out)
+        if listdir:
+            headers = (f"Content-Disposition", f"inline;filename=%s" % listdir[0])
+            return send_file(out + '/' + listdir[0], as_attachment=False)
+
+
 @app.route('/')
 def index():
     page, per_page, offset = get_page_args(page_parameter='page',
