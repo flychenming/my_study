@@ -82,10 +82,10 @@ if __name__ == '__main__':
     sql = "CREATE TABLE IF NOT EXISTS study(id INTEGER PRIMARY KEY,type varchar ,name varchar," \
           "suffix varchar,grade varchar,source varchar,size varchar,uploadDate varchar,filePath varchar)"
     cur.execute(sql)
-    grade = '1'
-    ap = ['/a/sjyw%s/','/a/sjyy%s/','/a/sjsx%s/']
-    for bp in ap:
-        path = bp % grade
-        while path:
-            path = bp % grade + get_page(path)
-
+    grades = ['1', '2', '3']
+    ap = ['/a/sjyw%s/', '/a/sjyy%s/', '/a/sjsx%s/']
+    for grade in grades:
+        for bp in ap:
+            path = bp % grade
+            while path:
+                path = bp % grade + get_page(path)
